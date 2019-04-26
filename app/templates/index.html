@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+{% if not session %}
+<div class='container'>
+  <div class='jumbotron'>
+    <div class="column">
+      <div class="row justify-content-center">
+        <h1>Welcome to OT Currency</h1>
+      </div>
+      <div class="row justify-content-center">
+        <a class="btn btn-primary" role="button" href="/login">Login</a>
+      </div>
+      <small>You must have an OUSD email address to access</small>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% if session["displayName"] %}
+
+<div class='container'>
+  <div class="row">
+    <div class="col-md-12 text-center">
+      <h1>Home</h1>
+      <hr>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-6 col-md-12 col-sm-12">
+      <div class="jumbotron">
+        <h1 class="text-center">Ledger</h1>
+        <hr>
+        <ul class="list-group">
+          {% for transaction in ledgerTransactions %}
+          <li class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">
+                <img height="20px" width="20px" src={{transaction.giver.image}} />
+                {{transaction.giver.name}} gave
+                <img height="20px" width="20px" src={{transaction.recipient.image}} />
+                {{transaction.recipient.name}}
+                <div class="btn btn-medal">{{transaction.amount}}</div>
+              </h5>
+            </div>
+            <p class="mb-1">Reason: {{transaction.reason}}</p>
+
+              <small><a href="/transvote/{{transaction.id}}/up"><img width="15" src="/static/tup.png"></a> ({{transaction.upvote}})
+                <a href="/transvote/{{transaction.id}}/down"><img width="15" src="/static/tdown.png"></a> ({{transaction.downvote}})
+
+                Category: {{transaction.category}}
+              <br>
+                {% if transaction.thanks %}
+                  {{transaction.recipient.name}} says <b>Thanks!</b>
+                {% endif %}
+              </small>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-12 col-sm-12">
+      <div class="jumbotron">
+        <h1 class="text-center">All-Time Stats</h1>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Total Money Transferred</th>
+              <th scope="col">Total Reputation Generated</th>
+              <th scope="col">Total Transactions Completed</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>{{totalMoney}}</th>
+              <th>{{totalRep}}</th>
+              <th>{{totalTransactions}}</th>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="jumbotron">
+        <h1 class="text-center">Why Are People Giving?</h1>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Category</th>
+              <th scope="col">Number of Transactions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for category in categories %}
+              <tr>
+                <th>{{ category[0] }}</th>
+                <th>{{ category[1] }}</th>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="jumbotron">
+        <h1 class="text-center">Leaderboard</h1>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Reputation</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in leaderboardUsers %}
+            <tr>
+              <th scope="row">{{loop.index}}</th>
+              <th>{{user.name}}</th>
+              <td>{{user.reputation}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div><small>Icons made by <a href="https://www.flaticon.com/authors/dave-gandy" title="Dave Gandy">Dave Gandy</a> from <a href="https://www.flaticon.com/"
+  title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/"
+  title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></small></div>
+{% endif %}
+{% endblock %}
