@@ -1,26 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField, IntegerField
 from app.routes.Classes import User
-
-"""
-CSV VERSION
-"""
-# import pandas as pd
-# import os
-# def getNames():
-#     cd = os.getcwd()
-#     table = pd.read_csv(cd.replace('\\','/')+'/app/routes/Forms/data.csv')
-#     student_names = table['Full Name'].unique()
-#     data = list(zip(student_names, student_names))
-#     return data
-
-"""
-DATABASE VERSION
-"""
 from flask import session
 from app.routes.Classes import User
-
-# full_name = session["displayName"]
 
 class GiveForm(FlaskForm):
     amount = IntegerField("Amount")
@@ -29,12 +11,17 @@ class GiveForm(FlaskForm):
     category = SelectField(label="Category", choices = [('Helped others','Helped others'),('Did me a favor','Did me a favor'),('Did something for a teacher','Did something for a teacher'),('Class participation','Class participation'),('Community beautification','Community beautification')])
     submit = SubmitField("Submit")
 
+    # Class method to ensure that each time you instantiate and new form the user names
+    # are reloaded from the database.  You call it this way:
+    # form = GiveForm.new()
     @classmethod
     def new(cls):
         # Instantiate the form
         form = cls()
+        # Create a list of tuples from the DB
         recipientChoices = [(row.name, row.name) for row in User.objects()]
+        # Sort the list
         recipientChoices.sort()
-        # Update the choices for the agency field
+        # Update the choices for the recipient form field
         form.recipient.choices = recipientChoices
         return form
