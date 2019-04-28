@@ -85,8 +85,10 @@ def login():
 
     data = r.json()
 
-    if data["domain"] != "ousd.org":
-        return "Please Sign in with your OUSD account"
+    if "ousd.org" not in data["emails"][0]["value"]:
+        session.pop("access_token")  # Log the user out
+        flash("Please sign in with your OUSD account", category="error")
+        return redirect("/")
 
     # Save some session variables
     session["displayName"] = data["displayName"]
@@ -153,6 +155,6 @@ def google_oauth2callback():
 
 @app.route("/logout")
 def logout():
-    [session.pop(key) for key in list(session.keys()) if key != '_flashes']
+    [session.pop(key)for key in list(session.keys()) if key != '_flashes']
 
     return redirect("/")
