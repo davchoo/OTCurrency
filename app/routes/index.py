@@ -88,8 +88,10 @@ def login():
 
     data = r.json()
 
-    if data["domain"] != "ousd.org":
-        return "Please Sign in with your OUSD account"
+    if "ousd.org" not in data["emails"][0]["value"]:
+        [session.pop(key)for key in list(session.keys()) if key != '_flashes'] # Log the user out
+        flash("Please sign in with your OUSD account", category="error")
+        return redirect("/")
 
     # Save some session variables
     session["displayName"] = data["displayName"]

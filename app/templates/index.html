@@ -2,7 +2,7 @@
 
 {% block body %}
 
-{% if not session %}
+{% if not session["access_token"] %}
 <div class='container'>
   <div class='jumbotron'>
     <div class="column">
