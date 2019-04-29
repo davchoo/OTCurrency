@@ -10,8 +10,8 @@ google_auth = GoogleClient(
     client_id=("1048349222266-n5praijtbm6a7buc893avtvmtr0k301p"
                ".apps.googleusercontent.com"),
     client_secret="gAarFeNq1vKtGXaxo96FS5H0",
-    # redirect_uri="http://localhost:5000/oauth2callback"
-    redirect_uri="http://otcurrency.appspot.com/oauth2callback"
+    redirect_uri="http://localhost:5000/oauth2callback"
+    # redirect_uri="http://otcurrency.appspot.com/oauth2callback"
     # "http://localhost:5000/oauth2callback"
     # "https://computerinv-216303.appspot.com/oauth2callback"
 )
@@ -49,7 +49,7 @@ def transvote(transID,vote):
     if userObj in transaction.voters:
         flash("You've already voted on that transaction")
     elif userObj == transaction.giver:
-        flash("You can't up vote your transaction.")
+        flash("You can't up vote your own transaction.")
     elif userObj == transaction.recipient and vote == "up":
         transaction.thanks = True
         transaction.reload()
@@ -79,9 +79,6 @@ def transvote(transID,vote):
 
     return redirect("/")
 
-
-
-
 @app.route('/login')
 def login():
     if not session.get("access_token"):
@@ -92,7 +89,6 @@ def login():
     r.raise_for_status()
 
     data = r.json()
-    # flash(data)
 
     if data["domain"] != "ousd.org":
         return "Please Sign in with your OUSD account"
@@ -101,29 +97,31 @@ def login():
     session["displayName"] = data["displayName"]
     session["image"] = data["image"]["url"]
 
-    user = User()
-
     # TODO: change this to a 'get' so it doesn't iterate ovar all users
     # probably need to store the unique googleID string in the User table
-    for i in User.objects:
-        if i.name == session["displayName"]:
-            session["wallet"] = i.wallet
-            session["reputation"] = i.reputation
-            # next lines are temp to inject some google values in to the User table
-            i.reload()
-            i.update(email = data["emails"][0]["value"],googleid = data["id"])
-            return redirect("/")
 
-    user.name = session["displayName"]
-    user.image = session["image"]
-    user.email = data["emails"][0]["value"]
-    user.googleid = data["id"]
-    user.wallet = "10"
-    user.reputation = "0"
+    #If the user exists, update sme stuff
+    if User.objects.get(name=session["displayName"]):
+        editUser = User.objects.get(name=session["displayName"])
+        session["wallet"] = editUser.wallet
+        session["reputation"] = editUser.reputation
+        # next lines are temp to inject some google values in to the User table
+        editUser.reload()
+        editUser.update(email = data["emails"][0]["value"],googleid = data["id"])
+        flash(f'Logged in to existing user and GoogleID: {data["id"]}')
+        return redirect("/")
+    #if the user does not exists, create it
+    newUser = User()
+    newUser.name = session["displayName"]
+    newUser.image = session["image"]
+    newUser.email = data["emails"][0]["value"]
+    newUser.googleid = data["id"]
+    newUser.wallet = "10"
+    newUser.reputation = "0"
     session["wallet"] = user.wallet
     session["reputation"] = user.reputation
-    user.save()
-
+    newUser.save()
+    flash("New User created ! Welcome ")
     return redirect("/")
 
 
