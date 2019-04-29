@@ -77,6 +77,8 @@ def transvote(transID,vote):
 
     return redirect("/")
 
+
+
 @app.route('/login')
 def login():
     if not session.get("access_token"):
@@ -147,6 +149,7 @@ def google_oauth2callback():
         return redirect(google_auth.authorize_url(
             scope=["profile", "email"],
             response_type="code",
+            prompt="select_account"  # Don't auto login if its one account
         ))
     data = google_auth.get_token(
         code=code,
