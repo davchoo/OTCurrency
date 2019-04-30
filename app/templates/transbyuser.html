@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
 {% block body %}
+<table class="table">
+<tr><td colspan=3><h2>Given by {{user.name}}</h2></td></tr>
 
-<h2>Given by {{user.name}}</h2>
-  <table class="table">
     <tr><th>Recipient</th><th>amount</th><th>reason</th></tr>
   {% for given in giver %}
     <tr>
@@ -18,10 +18,8 @@
       </td>
     </tr>
   {% endfor %}
-  </table>
 
-<h2>Received by {{user.name}}</h2>
-  <table class="table">
+<tr><td colspan=3><h2>Received by {{user.name}}</h2></td></tr>
     <tr><th>Giver</th><th>amount</th><th>reason</th></tr>
   {% for recipient in received %}
     <tr>
