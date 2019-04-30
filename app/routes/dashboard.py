@@ -6,7 +6,20 @@ import requests
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
+
     form = GiveForm.new()
+    currUser = User.objects.get(googleid=session['googleID'])
+    isRecipientTransactions = Transaction.objects(recipient=currUser.id)
+    isGiverTransactions = Transaction.objects(giver=currUser.id)
+    received=0
+    given=0
+    for transaction in isRecipientTransactions:
+        received += transaction.amount
+    for transaction in isGiverTransactions:
+        given += transaction.amount
+    flash(f"Total I have received is {received}. Total given by me is {given}")
+    myWallet = 10+given-received
+    flash(f"I was given 10 to start so 10 + {given} - {received} or {myWallet} is what I should be what I have in my wallet: ")
 
     print(form.recipient.data, type(form.recipient.data))
     print(form.reason.data, type(form.reason.data))

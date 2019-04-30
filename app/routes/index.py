@@ -96,12 +96,13 @@ def login():
     # Save Necessary variables
     session["displayName"] = data["displayName"]
     session["image"] = data["image"]["url"]
+    session["googleID"] = data["id"]
 
     # TODO: change this to a 'get' so it doesn't iterate ovar all users
     # probably need to store the unique googleID string in the User table
 
     #If the user exists, update sme stuff
-    if User.objects.get(name=session["displayName"]):
+    try:
         editUser = User.objects.get(name=session["displayName"])
         session["wallet"] = editUser.wallet
         session["reputation"] = editUser.reputation
@@ -110,18 +111,29 @@ def login():
         editUser.update(email = data["emails"][0]["value"],googleid = data["id"])
         flash(f'Logged in to existing user and GoogleID: {data["id"]}')
         return redirect("/")
-    #if the user does not exists, create it
-    newUser = User()
-    newUser.name = session["displayName"]
-    newUser.image = session["image"]
-    newUser.email = data["emails"][0]["value"]
-    newUser.googleid = data["id"]
-    newUser.wallet = "10"
-    newUser.reputation = "0"
-    session["wallet"] = user.wallet
-    session["reputation"] = user.reputation
-    newUser.save()
-    flash("New User created ! Welcome ")
+    except:
+        #if the user does not exists, create it
+
+        newUser = User()
+        newUser.name = session["displayName"]
+        newUser.image = session["image"]
+        newUser.email = data["emails"][0]["value"]
+        newUser.googleid = data["id"]
+        #instead of giving 10 here we should create a transaction of 10 given by "the system"
+        newUser.wallet = "0"
+        newUser.reputation = "0"
+        newUser.save()
+        newUser.reload()
+        adminUser = User.objects.get(googleid=session['googleID'])
+        #This creates a new transaction given 10 to the New User
+        newTransaction = Transaction()
+        newTransaction.giver = adminUser.id
+        newTransaction.recipient = newUser.id
+        newTransaction.amount = 10
+        newTransaction.reason = "New User"
+        newTransaction.category = "New User"
+        newTransaction.save()
+        flash("New User created! Welcome. ")
     return redirect("/")
 
 
