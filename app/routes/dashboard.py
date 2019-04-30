@@ -75,7 +75,8 @@ def dashboard():
         # if valid
         if validTransaction:
             # get giver data
-            giveUser = User.objects.get(googleid=session["googleID"])
+            currUser.reload()
+            giveUser = currUser
 
             # get recipient data
             recipientUser = User.objects.get(name=form.recipient.data)
@@ -109,12 +110,11 @@ def dashboard():
             flash(f"You successfully sent {form.amount.data} currency to {form.recipient.data}")
             return redirect("/dashboard")
 
-    # Update Wallet
-    for user in User.objects:
-        if user.name == session["displayName"]:
-            session["wallet"] = user.wallet
-            session["reputation"] = user.reputation
-            gaveto = user.gaveto
+    # Update session and other variables
+    currUser.reload()
+    session["wallet"] = currUser.wallet
+    session["reputation"] = currUser.reputation
+    gaveto = currUser.gaveto
 
 
     #get total money and transactions for user

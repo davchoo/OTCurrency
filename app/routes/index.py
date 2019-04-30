@@ -18,7 +18,7 @@ google_auth = GoogleClient(
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    ledgerTransactions = Transaction.objects()
+    ledgerTransactions = Transaction.objects.order_by('-createdate')
 
     # get totalmoney
     totalMoney = 0
