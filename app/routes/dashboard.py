@@ -18,11 +18,7 @@ def dashboard():
         received += transaction.amount
     for transaction in isGiverTransactions:
         given += transaction.amount
-    myWallet = 10+given-received
-
-    print(form.recipient.data, type(form.recipient.data))
-    print(form.reason.data, type(form.reason.data))
-    print(form.category.data, type(form.category.data))
+    myWallet = received-given
 
     #if request.method == 'POST' and form.validate():
     if request.method == 'POST':
@@ -79,14 +75,10 @@ def dashboard():
         # if valid
         if validTransaction:
             # get giver data
-            for user in User.objects:
-                if user.name == session["displayName"]:
-                    giveUser = user
+            giveUser = User.objects.get(googleid=session["googleID"])
 
             # get recipient data
-            for user in User.objects:
-                if user.name == form.recipient.data:
-                    recipientUser = user
+            recipientUser = User.objects.get(name=form.recipient.data)
 
             # create the transaction
             newTransaction = Transaction()
