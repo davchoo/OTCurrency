@@ -42,20 +42,18 @@ def index():
 @app.route('/transvote/<transID>/<vote>')
 def transvote(transID,vote):
     transaction = Transaction.objects.get(pk=transID)
-    for user in User.objects:
-        if user.name == session["displayName"]:
-            userObj = user
+    currUser.reload()
 
-    if userObj in transaction.voters:
+    if currUser in transaction.voters:
         flash("You've already voted on that transaction")
-    elif userObj == transaction.giver:
+    elif currUser == transaction.giver:
         flash("You can't up vote your own transaction.")
-    elif userObj == transaction.recipient and vote == "up":
+    elif currUser == transaction.recipient and vote == "up":
         transaction.thanks = True
         transaction.reload()
         transaction.update(thanks=True)
         flash("We will tell them thanks!")
-    elif userObj == transaction.recipient and vote == "down":
+    elif currUser == transaction.recipient and vote == "down":
         flash("Don't be a jerk.")
     else:
         if vote == "up":
