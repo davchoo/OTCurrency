@@ -10,8 +10,8 @@ google_auth = GoogleClient(
     client_id=("1048349222266-n5praijtbm6a7buc893avtvmtr0k301p"
                ".apps.googleusercontent.com"),
     client_secret="gAarFeNq1vKtGXaxo96FS5H0",
-    #redirect_uri="http://localhost:5000/oauth2callback"
-    redirect_uri="http://otcurrency.appspot.com/oauth2callback"
+    redirect_uri="http://localhost:5000/oauth2callback"
+    #redirect_uri="http://otcurrency.appspot.com/oauth2callback"
     # "http://localhost:5000/oauth2callback"
     # "https://computerinv-216303.appspot.com/oauth2callback"
 )
@@ -93,7 +93,7 @@ def login():
     if data["domain"] != "ousd.org":
         return "Please Sign in with your OUSD account"
 
-    # Save Necessary variables
+    # Save some session variables
     session["displayName"] = data["displayName"]
     session["image"] = data["image"]["url"]
     session["googleID"] = data["id"]

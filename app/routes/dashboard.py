@@ -3,6 +3,7 @@ from flask import render_template, session, request, redirect, flash
 from .Forms import GiveForm
 from .Classes import Transaction, User
 import requests
+from datetime import datetime
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
@@ -17,9 +18,7 @@ def dashboard():
         received += transaction.amount
     for transaction in isGiverTransactions:
         given += transaction.amount
-    flash(f"Total I have received is {received}. Total given by me is {given}")
     myWallet = 10+given-received
-    flash(f"I was given 10 to start so 10 + {given} - {received} or {myWallet} is what I should be what I have in my wallet: ")
 
     print(form.recipient.data, type(form.recipient.data))
     print(form.reason.data, type(form.reason.data))
@@ -96,6 +95,7 @@ def dashboard():
             newTransaction.amount = form.amount.data
             newTransaction.reason = form.reason.data
             newTransaction.category = form.category.data
+            newTransaction.createdate = datetime.now()
             newTransaction.save()
 
             # transfer currency between users and give reputation

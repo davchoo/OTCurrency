@@ -1,4 +1,4 @@
-from mongoengine import Document, StringField, ReferenceField, IntField, SortedListField, BooleanField
+from mongoengine import Document, StringField, ReferenceField, IntField, SortedListField, BooleanField, DateTimeField
 from .User import User
 
 
@@ -12,3 +12,4 @@ class Transaction(Document):
     downvote = IntField()
     voters = SortedListField(ReferenceField(User), ordering='name')
     thanks = BooleanField()
+    createdate = DateTimeField()
