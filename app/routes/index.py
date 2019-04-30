@@ -106,10 +106,11 @@ def login():
         editUser = User.objects.get(name=session["displayName"])
         session["wallet"] = editUser.wallet
         session["reputation"] = editUser.reputation
-        # next lines are temp to inject some google values in to the User table
+        # next lines inject some google values in to the User table. This code will only be needed
+        # for updates eventually as the same values are created for new users.
         editUser.reload()
-        editUser.update(email = data["emails"][0]["value"],googleid = data["id"])
-        flash(f'Logged in to existing user and GoogleID: {data["id"]}')
+        editUser.update(email = data["emails"][0]["value"],googleid = data["id"],image=session["image"])
+        flash(f'{session["displayName"]} successfully logged in to an existing account.')
         return redirect("/")
     except:
         #if the user does not exists, create it
@@ -124,10 +125,9 @@ def login():
         newUser.reputation = "0"
         newUser.save()
         newUser.reload()
-        adminUser = User.objects.get(googleid=session['googleID'])
-        #This creates a new transaction given 10 to the New User
+        #This creates a new transaction given 10 to the New User (from the newUser)
         newTransaction = Transaction()
-        newTransaction.giver = adminUser.id
+        newTransaction.giver = newUser.id
         newTransaction.recipient = newUser.id
         newTransaction.amount = 10
         newTransaction.reason = "New User"
