@@ -18,16 +18,16 @@ google_auth = GoogleClient(
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    ledgerTransactions = list(Transaction.objects[:9])[::-1]
+    ledgerTransactions = Transaction.objects()
 
     # get totalmoney
     totalMoney = 0
-    for transaction in list(Transaction.objects):
-        totalMoney += int(transaction.amount)
+    for transaction in ledgerTransactions:
+        totalMoney += transaction.amount
     totalTransactions = len(list(Transaction.objects))
 
     # leaderboardUsers = list(User.objects.order_by('-reputation')[:9])
-    leaderboardUsers = list(User.objects.order_by('-reputation'))
+    leaderboardUsers = User.objects.order_by('-reputation')
     #get the categories that have been used
     #and how many transactions of that Category
     categoryList = Counter([transaction.category for transaction in Transaction.objects])

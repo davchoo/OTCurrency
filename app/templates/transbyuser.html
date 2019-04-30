@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<h2>Given by {{user.name}}</h2>
+  <table class="table">
+    <tr><th>Recipient</th><th>amount</th><th>reason</th></tr>
+  {% for given in giver %}
+    <tr>
+      <td>
+        {{given.recipient.name}}
+      </td>
+      <td>
+        {{given.amount}}
+      </td>
+      <td>
+        {{given.reason}}
+      </td>
+    </tr>
+  {% endfor %}
+  </table>
+
+<h2>Received by {{user.name}}</h2>
+  <table class="table">
+    <tr><th>Giver</th><th>amount</th><th>reason</th></tr>
+  {% for recipient in received %}
+    <tr>
+      <td>
+        {{recipient.giver.name}}
+      </td>
+      <td>
+        {{recipient.amount}}
+      </td>
+      <td>
+        {{recipient.reason}}
+      </td>
+    </tr>
+  {% endfor %}
+  </table>
+
+{% endblock %}

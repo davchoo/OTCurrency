@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block body %}
+  <table class="table">
+    <tr><th></th><th></th><th>Name</th></tr>
+  {% for user in users %}
+    <tr>
+      <td>
+        <a href="/transactions/{{user.id}}">transactions</a>
+      </td>
+      <td>
+        <img src="{{user.image}}">
+      </td>
+      <td>
+        {{user.name}}
+      </td>
+    </tr>
+  {% endfor %}
+  </table>
+
+{% endblock %}
